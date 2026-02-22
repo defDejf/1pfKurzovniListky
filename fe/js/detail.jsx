@@ -8,6 +8,14 @@ function getCurrencyCode(item) {
     return item?.shortName;
 }
 
+const formatDateCZ = (dateString) => {
+  return new Intl.DateTimeFormat("cs-CZ", {
+    day: "numeric",
+    month: "long",
+    year: "numeric"
+  }).format(new Date(dateString));
+};
+
 function DetailApp() {
     const currencyCode = useMemo(() => {
         const searchParams = new URLSearchParams(window.location.search);
@@ -106,23 +114,43 @@ function DetailApp() {
     const currency = getCurrencyCode(detail) || currencyCode;
     const name = detail?.name || 'N/A';
     const country = detail?.country || 'N/A';
-    const buyRate = detail?.currBuy ?? 'N/A';
-    const sellRate = detail?.currSell ?? 'N/A';
+    const buyRateCash = detail?.valBuy ?? 'N/A';
+    const sellRateCash = detail?.valSell ?? 'N/A';
+    const midCash = detail?.valMid ?? 'N/A';
+    const buyRateCard = detail?.currBuy ?? 'N/A';
+    const sellRateCard = detail?.currSell ?? 'N/A';
+    const midCard = detail?.currMid ?? 'N/A';
+    const midRef = detail?.valMid ?? 'N/A';
     const validityDate = detail?.validFrom ?? null;
+    const change = detail?.move ?? 'N/A';
 
     return React.createElement(
         React.Fragment,
         null,
-        React.createElement('h1', null, currency),
+        React.createElement('h1', null, `Detail měny: ${name} (${currency}) - ${country}`),
+        validityDate ? React.createElement('p', null, `Kurz platný od: ${formatDateCZ(validityDate)}`) : null,
         React.createElement(
             'section',
             null,
-            React.createElement('h2', null, `Detail měny: ${name}`),
-            React.createElement('p', null, `Zkratka: ${currency}`),
-            React.createElement('p', null, `Země: ${country}`),
-            React.createElement('p', null, `Nákup: ${buyRate}`),
-            React.createElement('p', null, `Prodej: ${sellRate}`),
-            validityDate ? React.createElement('p', null, `Kurz platný od: ${validityDate}`) : null,
+            React.createElement('h2', null, "Hotovostní převody"),
+            React.createElement('p', null, `Nákup: ${buyRateCash} CZK`),
+            React.createElement('p', null, `Prodej: ${sellRateCash} CZK`),
+            React.createElement('p', null, `Střední hodnota: ${midCash} CZK`)
+        ),
+        React.createElement(
+            'section',
+            null,
+            React.createElement('h2', null, "Bezhotovostní převody"),
+            React.createElement('p', null, `Nákup: ${buyRateCard} CZK`),
+            React.createElement('p', null, `Prodej: ${sellRateCard} CZK`),
+            React.createElement('p', null, `Střední hodnota: ${midCard} CZK`)
+        ),
+        React.createElement(
+            'section',
+            null,
+            React.createElement('h2', null, "Další informace"),
+            React.createElement('p', null, `Střední hodnota ČNB: ${midRef} CZK`),
+            React.createElement('p', null, `Změna za 24h: ${change}%`)
         ),
     );
 }
