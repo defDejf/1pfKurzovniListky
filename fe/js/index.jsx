@@ -8,6 +8,34 @@ function IndexTableRows() {
     const [rates, setRates] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [orderBy, setOrderBy] = useState(() => document.getElementById('order')?.value ?? 'name');
+    const [orderDirection, setOrderDirection] = useState(() => document.getElementById('ascendecny')?.value ?? 'asc');
+
+    useEffect(() => {
+        const orderSelect = document.getElementById('order');
+        const directionSelect = document.getElementById('ascendecny');
+
+        if (!orderSelect || !directionSelect) {
+            return undefined;
+        }
+
+        const handleOrderChange = (event) => {
+            setOrderBy(event.target.value);
+        };
+
+        const handleDirectionChange = (event) => {
+            setOrderDirection(event.target.value);
+        };
+
+        orderSelect.addEventListener('change', handleOrderChange);
+        directionSelect.addEventListener('change', handleDirectionChange);
+
+        return () => {
+            orderSelect.removeEventListener('change', handleOrderChange);
+            directionSelect.removeEventListener('change', handleDirectionChange);
+        };
+    }, []);
+
 
     useEffect(() => {
         async function loadRates() {
@@ -68,7 +96,31 @@ function IndexTableRows() {
     }
 
 
-    return rates.map((rate) => {
+    const sortedRates = [...rates].sort((a, b) => {
+        const directionFactor = orderDirection === 'desc' ? -1 : 1;
+
+        const normalizeNumber = (value) => {
+            const parsed = Number(value);
+            return Number.isNaN(parsed) ? 0 : parsed;
+        };
+
+        const compareText = (valueA, valueB) => valueA.localeCompare(valueB, 'cs', { sensitivity: 'base' });
+
+        switch (orderBy) {
+            case 'buy_price':
+                return (normalizeNumber(a?.currBuy) - normalizeNumber(b?.currBuy)) * directionFactor;
+            case 'sell_price':
+                return (normalizeNumber(a?.currSell) - normalizeNumber(b?.currSell)) * directionFactor;
+            case 'change':
+                return (normalizeNumber(a?.move) - normalizeNumber(b?.move)) * directionFactor;
+            case 'name':
+            default:
+                return compareText(a?.name ?? '', b?.name ?? '') * directionFactor;
+        }
+    });
+
+    return sortedRates.map((rate) => {
+
         const currencyName = rate?.name ?? '';
         const currencyCode = rate?.shortName ?? '';
         const buyRate = rate?.currBuy ?? '-';
