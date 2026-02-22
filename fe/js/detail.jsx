@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'https://esm.sh/react@18.3.1';
-import { createRoot } from 'https://esm.sh/react-dom@18.3.1/client';
+import React, { useEffect, useMemo, useState } from 'react';
+import { createRoot } from 'react-dom/client';
 
 const EXCHANGE_RATES_ENDPOINT = process.env.REACT_APP_CSAS_URL;
 const API_KEY = process.env.REACT_APP_CSAS_API_KEY;
@@ -46,7 +46,7 @@ function DetailApp() {
 
                 const response = await fetch(detailUrl, {
                     headers: {
-                        'web-api-key': WEB_API_KEY,
+                        'web-api-key': API_KEY,
                     },
                 });
 

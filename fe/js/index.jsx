@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'https://esm.sh/react@18';
-import ReactDOM from 'https://esm.sh/react-dom@18/client';
+import React, { useEffect, useState } from 'react';
+import ReactDOM from 'react-dom/client';
 
 const API_URL = process.env.REACT_APP_CSAS_URL;
 const API_KEY = process.env.REACT_APP_CSAS_API_KEY;
@@ -13,7 +13,6 @@ function IndexTableRows() {
         async function loadRates() {
             try {
                 const overviewURL = new URL(API_URL);
-                overviewURL.searchParams.set('curr', currencyCode);
                 overviewURL.searchParams.set('web-api-key', API_KEY);
 
                 const response = await fetch(overviewURL, {
