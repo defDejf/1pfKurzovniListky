@@ -71,8 +71,8 @@ function IndexTableRows() {
     return rates.map((rate) => {
         const currencyName = rate?.name ?? '';
         const currencyCode = rate?.shortName ?? '';
-        const buyRate = rate?.valBuy ?? '-';
-        const sellRate = rate?.valSell ?? '-';
+        const buyRate = rate?.currBuy ?? '-';
+        const sellRate = rate?.currSell ?? '-';
         const change = rate?.move ?? '-';
 
         return (

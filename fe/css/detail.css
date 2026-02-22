@@ -72,13 +72,27 @@ main {
     color: var(--primary);
 }
 
-#detail-root > section {
+#detail-root .detail-sections > section {
     border: 1px solid var(--border);
     border-radius: var(--radius);
     background: var(--surface);
     box-shadow: var(--shadow);
     padding: 1.25rem;
 }
+
+#detail-root .detail-sections {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: 1rem;
+    margin-top: 2%;
+}
+
+#detail-root .detail-sections > section {
+    flex: 1 1 300px;
+    min-width: 0;
+}
+
 
 #detail-root h2 {
     margin: 0 0 1rem;
@@ -140,7 +154,7 @@ footer a {
         padding: 0.75rem;
     }
 
-    #detail-root > section {
+    #detail-root .detail-sections > section {
         padding: 1rem;
     }
 }

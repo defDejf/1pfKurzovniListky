@@ -130,29 +130,34 @@ function DetailApp() {
         React.createElement('h1', null, `Detail měny: ${name} (${currency}) - ${country}`),
         validityDate ? React.createElement('p', null, `Kurz platný od: ${formatDateCZ(validityDate)}`) : null,
         React.createElement(
-            'section',
-            null,
-            React.createElement('h2', null, "Hotovostní převody"),
-            React.createElement('p', null, `Nákup: ${buyRateCash} CZK`),
-            React.createElement('p', null, `Prodej: ${sellRateCash} CZK`),
-            React.createElement('p', null, `Střední hodnota: ${midCash} CZK`)
-        ),
-        React.createElement(
-            'section',
-            null,
-            React.createElement('h2', null, "Bezhotovostní převody"),
-            React.createElement('p', null, `Nákup: ${buyRateCard} CZK`),
-            React.createElement('p', null, `Prodej: ${sellRateCard} CZK`),
-            React.createElement('p', null, `Střední hodnota: ${midCard} CZK`)
-        ),
-        React.createElement(
-            'section',
-            null,
-            React.createElement('h2', null, "Další informace"),
-            React.createElement('p', null, `Střední hodnota ČNB: ${midRef} CZK`),
-            React.createElement('p', null, `Změna za 24h: ${change}%`)
+            'div',
+            { className: 'detail-sections' },
+            React.createElement(
+                'section',
+                null,
+                React.createElement('h2', null, "Hotovostní převody"),
+                React.createElement('p', null, `Nákup: ${buyRateCash} CZK`),
+                React.createElement('p', null, `Prodej: ${sellRateCash} CZK`),
+                React.createElement('p', null, `Střední hodnota: ${midCash} CZK`)
+            ),
+            React.createElement(
+                'section',
+                null,
+                React.createElement('h2', null, "Bezhotovostní převody"),
+                React.createElement('p', null, `Nákup: ${buyRateCard} CZK`),
+                React.createElement('p', null, `Prodej: ${sellRateCard} CZK`),
+                React.createElement('p', null, `Střední hodnota: ${midCard} CZK`)
+            ),
+            React.createElement(
+                'section',
+                null,
+                React.createElement('h2', null, "Další informace"),
+                React.createElement('p', null, `Střední hodnota ČNB: ${midRef} CZK`),
+                React.createElement('p', null, `Změna za 24h: ${change}%`)
+            )
         ),
     );
+
 }
 
 const rootElement = document.getElementById('detail-root');
