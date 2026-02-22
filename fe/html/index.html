@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="cs">
+    <head>
+        <link rel="stylesheet" href="../css/index.css">
+        <title>Kurzovní lístky - přehled</title>
+        <meta charset="utf-8">
+    </head>
+    <body>
+        <search>
+            <label for="order">Třídit podle:</label>
+            <select id="order" name="order">
+                <option value="name">Názvu</option>
+                <option value="buy_price">Nákupní ceny</option>
+                <option value="sell_price">Prodejní ceny</option>
+                <option value="change">Změny hodnoty</option>
+            </select>
+            <select id="ascendecny" name="ascendecny">
+                <option value="asc">Vzestupně</option>
+                <option value="desc">Sestupně</option>
+            </select>
+        </search>
+        <main>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Název</th>
+                        <th>Zkratka</th>
+                        <th>Nákpní cena</th>
+                        <th>Prodejní cena</th>
+                        <th>Změna za 24h</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- todo load with js -->
+                    <tr>
+                        <td>Dollar</td>
+                        <td>AUD</td>
+                        <td>15.898</td>
+                        <td>16.714</td>
+                        <td>-0.5</td>
+                    </tr>
+                    <tr>
+                        <td>Rand</td>
+                        <td>ZAR</td>
+                        <td>1.409</td>
+                        <td>1.482</td>
+                        <td>0</td>
+                    </tr>
+                </tbody>
+            </table>
+        </main>
+        <footer>
+            <p>Vytvořeno pro interview 1.Pf. Všechna práva vyhrazena.</p>
+            <a href="https://github.com/defDejf/1pfKurzovniListky">Kód k nalezení na GitHub.</a>
+        </footer>
+    </body>
+</html>
