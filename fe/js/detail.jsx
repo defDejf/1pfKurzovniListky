@@ -3,6 +3,8 @@ import { createRoot } from 'react-dom/client';
 
 const EXCHANGE_RATES_ENDPOINT = process.env.REACT_APP_CSAS_URL;
 const API_KEY = process.env.REACT_APP_CSAS_API_KEY;
+const OVERVIEW_RATES_STORAGE_KEY = 'overviewRates';
+const OVERVIEW_RATES_TTL_MS = 5 * 60 * 1000;
 
 function getCurrencyCode(item) {
     return item?.shortName;
@@ -46,8 +48,45 @@ function DetailApp() {
 
         let cancelled = false;
 
+         const parseCachedRates = () => {
+            const rawValue = sessionStorage.getItem(OVERVIEW_RATES_STORAGE_KEY);
+
+            if (!rawValue) {
+                return null;
+            }
+
+            try {
+                return JSON.parse(rawValue);
+            } catch {
+                sessionStorage.removeItem(OVERVIEW_RATES_STORAGE_KEY);
+                return null;
+            }
+        };
+
+        const isCacheFresh = (cachedValue) => {
+            const storedAt = Number(cachedValue?.storedAt);
+            return Number.isFinite(storedAt) && Date.now() - storedAt <= OVERVIEW_RATES_TTL_MS;
+        };
+
+        const getCachedCurrency = () => {
+            const cachedRates = parseCachedRates();
+
+            if (!cachedRates || !isCacheFresh(cachedRates) || !Array.isArray(cachedRates?.data)) {
+                return null;
+            }
+
+            return cachedRates.data.find((item) => String(getCurrencyCode(item) || '').toUpperCase() === currencyCode) || null;
+        };
+
         async function loadDetail() {
             try {
+                const cachedCurrency = getCachedCurrency();
+
+                if (cachedCurrency) {
+                    setState({ status: 'success', data: cachedCurrency, message: '' });
+                    return;
+                }
+
                 const detailUrl = new URL(EXCHANGE_RATES_ENDPOINT);
                 detailUrl.searchParams.set('curr', currencyCode);
                 detailUrl.searchParams.set('web-api-key', API_KEY);

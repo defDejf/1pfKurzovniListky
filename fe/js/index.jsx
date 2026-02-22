@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom/client';
 
 const API_URL = process.env.REACT_APP_CSAS_URL;
 const API_KEY = process.env.REACT_APP_CSAS_API_KEY;
+const OVERVIEW_RATES_STORAGE_KEY = 'overviewRates';
+const OVERVIEW_RATES_TTL_MS = 5 * 60 * 1000;
 
 function IndexTableRows() {
     const [rates, setRates] = useState([]);
@@ -38,8 +40,44 @@ function IndexTableRows() {
 
 
     useEffect(() => {
+        const parseCachedRates = () => {
+            const rawValue = sessionStorage.getItem(OVERVIEW_RATES_STORAGE_KEY);
+
+            if (!rawValue) {
+                return null;
+            }
+
+            try {
+                return JSON.parse(rawValue);
+            } catch {
+                sessionStorage.removeItem(OVERVIEW_RATES_STORAGE_KEY);
+                return null;
+            }
+        };
+
+        const isCacheFresh = (cachedValue) => {
+            const storedAt = Number(cachedValue?.storedAt);
+            return Number.isFinite(storedAt) && Date.now() - storedAt <= OVERVIEW_RATES_TTL_MS;
+        };
+
+        const getRatesFromCache = () => {
+            const cachedValue = parseCachedRates();
+            if (!cachedValue || !isCacheFresh(cachedValue) || !Array.isArray(cachedValue?.data)) {
+                return null;
+            }
+            return cachedValue.data;
+        };
+
         async function loadRates() {
             try {
+                const cachedRates = getRatesFromCache();
+
+                if (cachedRates) {
+                    setRates(cachedRates);
+                    setLoading(false);
+                    return;
+                }
+
                 const overviewURL = new URL(API_URL);
                 overviewURL.searchParams.set('web-api-key', API_KEY);
 
@@ -60,6 +98,15 @@ function IndexTableRows() {
                     : Array.isArray(payload?.rates)
                         ? payload.rates
                         : [];
+
+                sessionStorage.setItem(
+                    OVERVIEW_RATES_STORAGE_KEY,
+                    JSON.stringify({
+                        data: exchangeRates,
+                        storedAt: Date.now(),
+                    }),
+                );
+
                 setRates(exchangeRates);
             } catch (fetchError) {
                 setError(fetchError instanceof Error ? fetchError.message : 'Neznámá chyba při načítání.');
@@ -127,18 +174,21 @@ function IndexTableRows() {
         const sellRate = rate?.currSell ?? '-';
         const change = rate?.move ?? '-';
 
+        const navigateToDetail = () => {
+            window.location.href = `detail.html?currency=${encodeURIComponent(currencyCode)}`;
+        };
+
+
         return (
             <tr
                 key={currencyCode}
                 role="button"
                 tabIndex={0}
-                onClick={() => {
-                    window.location.href = `detail.html?currency=${encodeURIComponent(currencyCode)}`;
-                }}
+                onClick={navigateToDetail}
                 onKeyDown={(event) => {
                     if (event.key === 'Enter' || event.key === ' ') {
                         event.preventDefault();
-                        window.location.href = `detail.html?currency=${encodeURIComponent(currencyCode)}`;
+                        navigateToDetail();
                     }
                 }}
             >
