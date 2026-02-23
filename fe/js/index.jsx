@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 
-const API_URL = process.env.REACT_APP_CSAS_URL;
-const API_KEY = process.env.REACT_APP_CSAS_API_KEY;
+const API_URL = process.env.BASE_URL;
+const API_KEY = process.env.API_KEY;
 const OVERVIEW_RATES_STORAGE_KEY = 'overviewRates';
 const OVERVIEW_RATES_TTL_MS = 5 * 60 * 1000;
 
@@ -175,7 +175,7 @@ function IndexTableRows() {
         const change = rate?.move ?? '-';
 
         const navigateToDetail = () => {
-            window.location.href = `detail.html?currency=${encodeURIComponent(currencyCode)}`;
+            window.location.href = `detail.html?curr=${encodeURIComponent(currencyCode)}`;
         };
 
 

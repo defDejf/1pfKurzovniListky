@@ -21,11 +21,10 @@ public class ExchangeRateController {
     @GetMapping
     public ResponseEntity<?> getExchangeRates(
         @RequestParam(required = false, defaultValue = "false") boolean refresh,
-        @RequestParam(required = false) String shortName
-    ) {
+        @RequestParam(required = false) String curr) {
         try {
             return ResponseEntity.ok(
-                exchangeRateService.getExchangeRates(refresh, shortName)
+                exchangeRateService.getExchangeRates(refresh, curr)
             );
 
         } catch (ExchangeRateNotFoundException e) {

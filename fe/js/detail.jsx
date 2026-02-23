@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 
-const EXCHANGE_RATES_ENDPOINT = process.env.REACT_APP_CSAS_URL;
-const API_KEY = process.env.REACT_APP_CSAS_API_KEY;
+const EXCHANGE_RATES_ENDPOINT = process.env.BASE_URL;
+const API_KEY = process.env.API_KEY;
 const OVERVIEW_RATES_STORAGE_KEY = 'overviewRates';
 const OVERVIEW_RATES_TTL_MS = 5 * 60 * 1000;
 
@@ -21,7 +21,7 @@ const formatDateCZ = (dateString) => {
 function DetailApp() {
     const currencyCode = useMemo(() => {
         const searchParams = new URLSearchParams(window.location.search);
-        return (searchParams.get('currency') || '').trim().toUpperCase();
+        return (searchParams.get('curr') || '').trim().toUpperCase();
     }, []);
 
     const [state, setState] = useState({ status: 'loading', data: null, message: '' });

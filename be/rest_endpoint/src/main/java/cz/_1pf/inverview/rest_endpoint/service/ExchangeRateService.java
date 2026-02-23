@@ -9,7 +9,6 @@ import cz._1pf.inverview.rest_endpoint.api.model.ExchangeRate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -21,29 +20,27 @@ public class ExchangeRateService {
 
     public List<ExchangeRate> getExchangeRates(boolean refresh, String shortName) throws ApiConnectionException, ExchangeRateNotFoundException {
 
-        List<ExchangeRate> rates = new ArrayList<>();
+        if (refresh || repository.count() == 0) refreshRates();
 
-        if (refresh) rates = refreshRates();
-
-        if (shortName != null) {
+        if (shortName != null && !shortName.isBlank()) {
             return List.of(
                 repository.findByShortName(shortName)
                     .orElseThrow(() -> new ExchangeRateNotFoundException(shortName))
             );
         }
 
-        return rates;
+        return repository.findAll();
     }
 
-    public List<ExchangeRate> refreshRates() {
+    public void refreshRates() {
         List<ExchangeRateDto> dtos = csasApiConnector.fetchRates();
 
         List<ExchangeRate> entities = dtos.stream()
             .map(this::mapToEntity)
             .toList();
 
+        repository.deleteAllInBatch();
         repository.saveAll(entities);
-        return entities;
     }
 
     private ExchangeRate mapToEntity(ExchangeRateDto dto) {
