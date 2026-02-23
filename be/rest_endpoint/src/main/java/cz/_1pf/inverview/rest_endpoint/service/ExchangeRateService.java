@@ -39,6 +39,7 @@ public class ExchangeRateService {
             .map(this::mapToEntity)
             .toList();
 
+        System.out.println(">>> RATES REFRESHED");
         repository.deleteAllInBatch();
         repository.saveAll(entities);
     }

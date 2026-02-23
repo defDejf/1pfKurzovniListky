@@ -49,10 +49,7 @@ function DetailApp() {
                 const refreshUrl = new URL(EXCHANGE_RATES_ENDPOINT);
                 refreshUrl.searchParams.set('usedb', 'true');
                 refreshUrl.searchParams.set('curr', currencyCode);
-
-                if (!useLocalEndpoint) {
-                    refreshUrl.searchParams.set('web-api-key', API_KEY);
-                }
+                // window.alert(refreshUrl)
 
                 const response = await fetch(refreshUrl);
 

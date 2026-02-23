@@ -33,7 +33,7 @@ nav {
     padding: 0.9rem 1rem;
 }
 
-#back-button {
+#back-button, #refresh-button {
     border: 1px solid var(--border);
     background: #fff;
     color: #334155;
@@ -46,11 +46,11 @@ nav {
     transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
-#back-button:hover {
+#back-button:hover, #refresh-button:hover {
     background: #f8fafc;
 }
 
-#back-button:active {
+#back-button:active, #refresh-button:active {
     transform: translateY(1px);
 }
 

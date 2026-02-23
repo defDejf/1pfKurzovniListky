@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/exchange-rates")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:*")
+@CrossOrigin(originPatterns = {"http://localhost:*", "http://127.0.0.1:*"})
 public class ExchangeRateController {
 
     private final ExchangeRateService exchangeRateService;
@@ -20,7 +20,7 @@ public class ExchangeRateController {
     public ResponseEntity<?> getExchangeRates(
         @RequestParam(required = false, defaultValue = "false") boolean usedb,
         @RequestParam(required = false) String curr) {
-        System.out.println(">>> CONTROLLER HIT");
+//        System.out.println(">>> CONTROLLER HIT");
         try {
             return ResponseEntity.ok(
                 // originally called it refresh, inverted cause i dont want to rewrite it further down
