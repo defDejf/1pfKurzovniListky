@@ -6,6 +6,7 @@ const API_URL = useLocalEndpoint ? process.env.REACT_APP_CSAS_URL : process.env.
 const API_KEY = process.env.API_KEY;
 const OVERVIEW_RATES_STORAGE_KEY = 'overviewRates';
 const OVERVIEW_RATES_TTL_MS = 5 * 60 * 1000;
+window.alert(API_URL)
 
 function IndexTableRows() {
     const [rates, setRates] = useState([]);
@@ -43,7 +44,7 @@ function IndexTableRows() {
                 }
 
                 const refreshUrl = new URL(API_URL);
-                refreshUrl.searchParams.set('refresh', 'true');
+                refreshUrl.searchParams.set('usedb', 'true');
 
                 if (!useLocalEndpoint) {
                     refreshUrl.searchParams.set('web-api-key', API_KEY);
