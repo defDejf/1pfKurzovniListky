@@ -1,12 +1,12 @@
 api:
-  key: ${API_KEY:}
-  url: ${BASE_URL:https://webapi.developers.erstegroup.com/api/csas/public/sandbox/v3/rates/exchangerates}
+  key: ${API_KEY}
+  url: ${BASE_URL}
 
 spring:
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/exchangerates}
-    username: ${SPRING_DATASOURCE_USERNAME:postgres}
-    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
 
   jpa:
     hibernate:

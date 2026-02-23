@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 
 const useLocalEndpoint = String(process.env.useLocalEndpoint || '').toLowerCase() === 'true';
 const API_URL = useLocalEndpoint ? process.env.REACT_APP_CSAS_URL : process.env.BASE_URL;
-const API_KEY = process.env.REACT_APP_CSAS_API_KEY || process.env.API_KEY;
+const API_KEY = process.env.API_KEY;
 const OVERVIEW_RATES_STORAGE_KEY = 'overviewRates';
 const OVERVIEW_RATES_TTL_MS = 5 * 60 * 1000;
 
@@ -45,7 +45,7 @@ function IndexTableRows() {
                 const refreshUrl = new URL(API_URL);
                 refreshUrl.searchParams.set('refresh', 'true');
 
-                if (API_KEY) {
+                if (!useLocalEndpoint) {
                     refreshUrl.searchParams.set('web-api-key', API_KEY);
                 }
 
@@ -119,7 +119,7 @@ function IndexTableRows() {
                 }
 
                 const overviewURL = new URL(API_URL);
-                if (API_KEY) {
+                if (!useLocalEndpoint) {
                     overviewURL.searchParams.set('web-api-key', API_KEY);
                 }
 

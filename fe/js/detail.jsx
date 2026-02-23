@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 
 const useLocalEndpoint = String(process.env.useLocalEndpoint || '').toLowerCase() === 'true';
 const EXCHANGE_RATES_ENDPOINT = useLocalEndpoint ? process.env.REACT_APP_CSAS_URL : process.env.BASE_URL;
-const API_KEY = process.env.REACT_APP_CSAS_API_KEY || process.env.API_KEY;
+const API_KEY = process.env.API_KEY;
 const OVERVIEW_RATES_STORAGE_KEY = 'overviewRates';
 const OVERVIEW_RATES_TTL_MS = 5 * 60 * 1000;
 
@@ -47,10 +47,10 @@ function DetailApp() {
                 }
 
                 const refreshUrl = new URL(EXCHANGE_RATES_ENDPOINT);
-                refreshUrl.searchParams.set('refresh', 'true');
+                refreshUrl.searchParams.set('usedb', 'true');
                 refreshUrl.searchParams.set('curr', currencyCode);
 
-                if (API_KEY) {
+                if (!useLocalEndpoint) {
                     refreshUrl.searchParams.set('web-api-key', API_KEY);
                 }
 
@@ -130,7 +130,7 @@ function DetailApp() {
 
                 const detailUrl = new URL(EXCHANGE_RATES_ENDPOINT);
                 detailUrl.searchParams.set('curr', currencyCode);
-                if (API_KEY) {
+                if (!useLocalEndpoint) {
                     detailUrl.searchParams.set('web-api-key', API_KEY);
                 }
 

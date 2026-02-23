@@ -18,12 +18,8 @@ services:
   backend:
     build:
       context: ./be/rest_endpoint
-    environment:
-      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL:-jdbc:postgresql://db:5432/exchangerates}
-      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME:-postgres}
-      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD:-postgres}
-      API_KEY: ${API_KEY:-}
-      BASE_URL: ${BASE_URL:-https://webapi.developers.erstegroup.com/api/csas/public/sandbox/v3/rates/exchangerates}
+    env_file:
+      - .env
     ports:
       - "8080:8080"
     depends_on:
@@ -33,12 +29,8 @@ services:
   frontend:
     build:
       context: ./fe
-    environment:
-      useLocalEndpoint: ${useLocalEndpoint:-true}
-      REACT_APP_CSAS_URL: ${REACT_APP_CSAS_URL:-http://localhost:8080/api/exchange-rates}
-      REACT_APP_CSAS_API_KEY: ${REACT_APP_CSAS_API_KEY:-}
-      BASE_URL: ${BASE_URL:-https://webapi.developers.erstegroup.com/api/csas/public/sandbox/v3/rates/exchangerates}
-      API_KEY: ${API_KEY:-}
+    env_file:
+      - .env
     ports:
       - "5173:5173"
     depends_on:

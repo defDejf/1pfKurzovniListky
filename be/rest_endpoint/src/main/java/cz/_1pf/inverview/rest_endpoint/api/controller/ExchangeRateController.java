@@ -6,25 +6,24 @@ import cz._1pf.inverview.rest_endpoint.service.ExchangeRateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/exchange-rates")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:*")
 public class ExchangeRateController {
 
     private final ExchangeRateService exchangeRateService;
 
     @GetMapping
     public ResponseEntity<?> getExchangeRates(
-        @RequestParam(required = false, defaultValue = "false") boolean refresh,
+        @RequestParam(required = false, defaultValue = "false") boolean usedb,
         @RequestParam(required = false) String curr) {
         try {
             return ResponseEntity.ok(
-                exchangeRateService.getExchangeRates(refresh, curr)
+                // originally called it refresh, inverted cause i dont want to rewrite it further down
+                exchangeRateService.getExchangeRates(!usedb, curr)
             );
 
         } catch (ExchangeRateNotFoundException e) {
