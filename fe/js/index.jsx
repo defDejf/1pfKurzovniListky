@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 
-const API_URL = process.env.BASE_URL;
-const API_KEY = process.env.API_KEY;
+const useLocalEndpoint = String(process.env.useLocalEndpoint || '').toLowerCase() === 'true';
+const API_URL = useLocalEndpoint ? process.env.REACT_APP_CSAS_URL : process.env.BASE_URL;
+const API_KEY = process.env.REACT_APP_CSAS_API_KEY || process.env.API_KEY;
 const OVERVIEW_RATES_STORAGE_KEY = 'overviewRates';
 const OVERVIEW_RATES_TTL_MS = 5 * 60 * 1000;
 
@@ -16,6 +17,12 @@ function IndexTableRows() {
     useEffect(() => {
         const orderSelect = document.getElementById('order');
         const directionSelect = document.getElementById('ascendecny');
+        const refreshButton = document.getElementById('refresh-button');
+
+        if (!useLocalEndpoint && refreshButton) {
+            refreshButton.remove();
+        }
+
 
         if (!orderSelect || !directionSelect) {
             return undefined;
@@ -29,12 +36,41 @@ function IndexTableRows() {
             setOrderDirection(event.target.value);
         };
 
+        const handleRefresh = async () => {
+            try {
+                if (!API_URL) {
+                    throw new Error('Endpoint URL is missing.');
+                }
+
+                const refreshUrl = new URL(API_URL);
+                refreshUrl.searchParams.set('refresh', 'true');
+
+                if (API_KEY) {
+                    refreshUrl.searchParams.set('web-api-key', API_KEY);
+                }
+
+                const response = await fetch(refreshUrl);
+
+                if (!response.ok) {
+                    throw new Error(`Nepodařilo se obnovit data: ${response.status}`);
+                }
+
+                sessionStorage.removeItem(OVERVIEW_RATES_STORAGE_KEY);
+                window.location.reload();
+            } catch (refreshError) {
+                alert(refreshError instanceof Error ? refreshError.message : 'Neznámá chyba při obnově dat.');
+            }
+        };
+
+
         orderSelect.addEventListener('change', handleOrderChange);
         directionSelect.addEventListener('change', handleDirectionChange);
+        refreshButton?.addEventListener('click', handleRefresh);
 
         return () => {
             orderSelect.removeEventListener('change', handleOrderChange);
             directionSelect.removeEventListener('change', handleDirectionChange);
+            refreshButton?.removeEventListener('click', handleRefresh);
         };
     }, []);
 
@@ -78,14 +114,16 @@ function IndexTableRows() {
                     return;
                 }
 
-                const overviewURL = new URL(API_URL);
-                overviewURL.searchParams.set('web-api-key', API_KEY);
+                if (!API_URL) {
+                    throw new Error('Endpoint URL is missing.');
+                }
 
-                const response = await fetch(overviewURL, {
-                    headers: {
-                        'web-api-key': API_KEY,
-                    },
-                });
+                const overviewURL = new URL(API_URL);
+                if (API_KEY) {
+                    overviewURL.searchParams.set('web-api-key', API_KEY);
+                }
+
+                const response = await fetch(overviewURL);
 
 
                 if (!response.ok) {

@@ -1,8 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 
-const EXCHANGE_RATES_ENDPOINT = process.env.BASE_URL;
-const API_KEY = process.env.API_KEY;
+const useLocalEndpoint = String(process.env.useLocalEndpoint || '').toLowerCase() === 'true';
+const EXCHANGE_RATES_ENDPOINT = useLocalEndpoint ? process.env.REACT_APP_CSAS_URL : process.env.BASE_URL;
+const API_KEY = process.env.REACT_APP_CSAS_API_KEY || process.env.API_KEY;
 const OVERVIEW_RATES_STORAGE_KEY = 'overviewRates';
 const OVERVIEW_RATES_TTL_MS = 5 * 60 * 1000;
 
@@ -33,9 +34,44 @@ function DetailApp() {
             window.location.href = 'index.html';
         };
 
+        const refreshButton = document.getElementById('refresh-button');
+
+        if (!useLocalEndpoint && refreshButton) {
+            refreshButton.remove();
+        }
+
+        const handleRefresh = async () => {
+            try {
+                if (!EXCHANGE_RATES_ENDPOINT) {
+                    throw new Error('Endpoint URL is missing.');
+                }
+
+                const refreshUrl = new URL(EXCHANGE_RATES_ENDPOINT);
+                refreshUrl.searchParams.set('refresh', 'true');
+                refreshUrl.searchParams.set('curr', currencyCode);
+
+                if (API_KEY) {
+                    refreshUrl.searchParams.set('web-api-key', API_KEY);
+                }
+
+                const response = await fetch(refreshUrl);
+
+                if (!response.ok) {
+                    throw new Error(`Unable to refresh exchange rates (HTTP ${response.status}).`);
+                }
+
+                sessionStorage.removeItem(OVERVIEW_RATES_STORAGE_KEY);
+                window.location.reload();
+            } catch (error) {
+                alert(error.message || 'Unknown refresh error.');
+            }
+        }
+
         if (backButton) {
             backButton.addEventListener('click', handleBack);
         }
+
+        refreshButton?.addEventListener('click', handleRefresh);
 
         if (!currencyCode) {
             setState({ status: 'error', data: null, message: 'Missing currency query parameter.' });
@@ -43,6 +79,7 @@ function DetailApp() {
                 if (backButton) {
                     backButton.removeEventListener('click', handleBack);
                 }
+                refreshButton?.removeEventListener('click', handleRefresh);
             };
         }
 
@@ -87,15 +124,18 @@ function DetailApp() {
                     return;
                 }
 
+               if (!EXCHANGE_RATES_ENDPOINT) {
+                    throw new Error('Endpoint URL is missing.');
+                }
+
                 const detailUrl = new URL(EXCHANGE_RATES_ENDPOINT);
                 detailUrl.searchParams.set('curr', currencyCode);
-                detailUrl.searchParams.set('web-api-key', API_KEY);
+                if (API_KEY) {
+                    detailUrl.searchParams.set('web-api-key', API_KEY);
+                }
 
-                const response = await fetch(detailUrl, {
-                    headers: {
-                        'web-api-key': API_KEY,
-                    },
-                });
+                const response = await fetch(detailUrl);
+
 
                 if (!response.ok) {
                     throw new Error(`Unable to load exchange rates (HTTP ${response.status}).`);
@@ -134,6 +174,7 @@ function DetailApp() {
             if (backButton) {
                 backButton.removeEventListener('click', handleBack);
             }
+            refreshButton?.removeEventListener('click', handleRefresh);
         };
     }, [currencyCode]);
 
