@@ -47,7 +47,7 @@ function DetailApp() {
                 }
 
                 const refreshUrl = new URL(EXCHANGE_RATES_ENDPOINT);
-                refreshUrl.searchParams.set('usedb', 'true');
+                refreshUrl.searchParams.set('usedb', 'false');
                 refreshUrl.searchParams.set('curr', currencyCode);
                 // window.alert(refreshUrl)
 

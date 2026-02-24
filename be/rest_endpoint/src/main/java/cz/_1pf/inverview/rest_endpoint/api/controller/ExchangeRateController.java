@@ -18,12 +18,12 @@ public class ExchangeRateController {
 
     @GetMapping
     public ResponseEntity<?> getExchangeRates(
-        @RequestParam(required = false, defaultValue = "false") boolean usedb,
+        @RequestParam(required = false, defaultValue = "true") boolean usedb,
         @RequestParam(required = false) String curr) {
 //        System.out.println(">>> CONTROLLER HIT");
         try {
             return ResponseEntity.ok(
-                // originally called it refresh, inverted cause i dont want to rewrite it further down
+                // originally called it refresh, inverted cause I don't want to rewrite it further down
                 exchangeRateService.getExchangeRates(!usedb, curr)
             );
 

@@ -44,7 +44,7 @@ function IndexTableRows() {
                 }
 
                 const refreshUrl = new URL(API_URL);
-                refreshUrl.searchParams.set('usedb', 'true');
+                refreshUrl.searchParams.set('usedb', 'false');
 
                 const response = await fetch(refreshUrl);
 
