@@ -22,7 +22,7 @@ Endpoint vyžaduje env proměnné a běžící databázi. Kvůli běhu mimo kont
 2. Nahradit ```.env``` a ```.env.local``` soubory těmi, které přišly jako příloha emailu s oznámením konce implementace
 3. Ve složce 1pfKurzovniListky otevřít příkazovou řádku a spustit databázi příkazem ```docker compose up -d db```
 4. Ve složce 1pfKurzovniListky otevřít příkazovou řádku a spustit endpoint s env proměnnými příkazem ```for /f "usebackq tokens=1,* delims==" %A in (".env.local") do @if not "%A"=="" if not "%A:~0,1%"=="#" set "%A=%B" && java -jar rest_endpoint-0.0.1-SNAPSHOT.jar```
-5. Endpoint běží na ```http://localhost:8080/api/exchange-rates?usedb=false```
+5. Endpoint běží na ```http://localhost:8080/api/exchange-rates```
 
 ## Frontend 1
 
